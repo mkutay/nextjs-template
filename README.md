@@ -1,21 +1,27 @@
-# Next.js template
+# nextjs-template
 
-This is a Next.js template with shadcn/ui.
+A Next.js template that is generic enough to be used for any project, but also has some nice features like:
 
-## Adding components
+- TS
+- biome
+- vitest
+- playwright
+- tailwind
+- shadcn
+- neverthrow
+- bun
 
-To add components to your app, run the following command:
+## Add components
 
 ```bash
-npx shadcn@latest add button
+bunx shadcn@latest add button
 ```
 
-This will place the ui components in the `components` directory.
+## Testing
 
-## Using components
-
-To use the components in your app, import them as follows:
-
-```tsx
-import { Button } from "@/components/ui/button";
+```bash
+bun run test # for unit tests
+bun run e2e # for end-to-end tests
 ```
+
+See `package.json` for more scripts.
