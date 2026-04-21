@@ -13,10 +13,16 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "e2e": "playwright test",
-    "e2e:ui": "playwright test --ui"
+    "e2e:ui": "playwright test --ui",
+    "db:types": "supabase gen types typescript --local --schema public > ./src/lib/supabase/types.ts",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase reset"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
+    "@supabase/ssr": "0.8.0",
+    "@supabase/supabase-js": "2.89.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.8.0",
@@ -39,12 +45,12 @@
     "@types/node": "^25.5.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@types/testing-library__jest-dom": "^6.0.0",
     "@vitejs/plugin-react": "^6.0.1",
     "@vitejs/vite-plugin-react-monorepo": "vitejs/vite-plugin-react",
     "@vitest/coverage-v8": "^4.1.4",
     "jsdom": "^29.0.2",
     "postcss": "^8",
+    "supabase": "2.67.1",
     "tailwindcss": "^4.2.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.4"
