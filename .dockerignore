@@ -1,0 +1,16 @@
+.git
+.gitignore
+.next
+node_modules
+
+.env.example
+
+# test artifacts
+coverage
+playwright-report
+test-results
+
+# docs
+README.md
+Dockerfile
+docker-compose.yml
