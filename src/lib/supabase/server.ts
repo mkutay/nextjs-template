@@ -1,72 +1,62 @@
-/** biome-ignore-all lint/style/noNonNullAssertion: supabase */
 import { createServerClient } from "@supabase/ssr";
 import { createClient as supaCreateClient } from "@supabase/supabase-js";
-import { ResultAsync } from "neverthrow";
+import { fromSafePromise, ok, type Result, type ResultAsync } from "neverthrow";
 import { cookies } from "next/headers";
-import type { Database } from "./types";
+import { env } from "@/env";
+import type { Database } from "./database";
+import type { SBClient } from "./types";
 
-export const createPublicClientAsync = async () => {
-  const cookieStore = await cookies();
-
-  return createServerClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_PUBLISHABLE_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
-            });
-          } catch {}
+/**
+ * Create a Supabase client for use in server environments, such as Server Components,
+ * API routes, or server actions.
+ *
+ * @returns A Supabase client instance for server usage.
+ * @note Especially important if using Fluid compute: Don't put this client in a
+ * global variable. Always create a new client within each function when using
+ * it.
+ */
+export const createClient = (): ResultAsync<SBClient, never> =>
+  fromSafePromise(cookies()).map((cookieStore) =>
+    createServerClient<Database>(
+      env.NEXT_PUBLIC_SUPABASE_URL,
+      env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                cookieStore.set(name, value, options);
+              });
+            } catch {
+              // The `setAll` method was called from a Server Component.
+              // This can be ignored if you have proxy refreshing
+              // user sessions.
+            }
+          },
         },
       },
-    },
+    ),
   );
-};
 
-export const createServiceClientAsync = async () => {
-  return supaCreateClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
+/**
+ * Create a Supabase admin client with the secret key, which has elevated
+ * privileges and should only be used in secure server-side environments.
+ *
+ * @returns A Supabase client with full permissions.
+ */
+export const createAdminClient = (): Result<SBClient, never> =>
+  ok(
+    supaCreateClient<Database>(
+      env.NEXT_PUBLIC_APP_URL,
+      env.SUPABASE_SECRET_KEY,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
       },
-    },
+    ),
   );
-};
-
-export const createPublicClient = () =>
-  ResultAsync.fromPromise(
-    createPublicClientAsync(),
-    (error) =>
-      ({
-        message: `Failed to create Supabase public client. ${error}`,
-        code: "SUPABASE_CLIENT_ERROR",
-      }) as CreateClientError,
-  );
-
-export const createServiceClient = () =>
-  ResultAsync.fromPromise(
-    createServiceClientAsync(),
-    (error) =>
-      ({
-        message: `Failed to create Supabase service client. ${error}`,
-        code: "SUPABASE_CLIENT_ERROR",
-      }) as CreateClientError,
-  );
-
-type CreateClientError = {
-  message: string;
-  code: "SUPABASE_CLIENT_ERROR";
-};
-
-export const createClient = () =>
-  process.env.MODE === "test" || process.env.BUILDING === "true"
-    ? createServiceClient()
-    : createPublicClient();

@@ -15,6 +15,7 @@ type StorageResponse<T> =
 /**
  * A type representing data returned from a Supabase query, which can be
  * either the data T, an object containing the data and a count, or just the count.
+ *
  * @template T The type of the data returned from the query.
  */
 export type WithCount<T> = T | { data: T; count: number } | number;
@@ -404,6 +405,7 @@ export const postgreSQLErrorCodes = Object.keys(postgreSQLErrorMessages);
 /**
  * A type representing an error that can occur during a Supabase query,
  * including the error message, type, and detailed information from PostgreSQL.
+ *
  * @template T A string literal type representing the specific type of database error.
  */
 export type SupabaseQueryError<T extends string> = {
@@ -441,6 +443,7 @@ export function handleSupabaseResponse<T>(
 /**
  * Handles the response from a Supabase query, returning a ResultAsync that
  * resolves to the data on success or a SupabaseQueryError on failure.
+ *
  * This function is overloaded to support both data-only, data/count,
  * and count-only returns.
  */
@@ -503,6 +506,7 @@ export function supabaseRun<T>(
  * Executes a Supabase query and returns a ResultAsync containing either the
  * data or a SupabaseQueryError. This function is overloaded to support both
  * data-only, data/count, and count-only returns.
+ *
  * @param query A Promise-like object representing the Supabase query to be executed.
  * @param type The type of result to return: "data" (default), "count" (`{data, count}`), or "head" (count only).
  * @returns A ResultAsync that resolves to the query data or {data, count} or count on success.
@@ -541,6 +545,7 @@ export type SupabaseStorageError = {
 
 /**
  * Handles the response from a Supabase storage operation, returning a ResultAsync.
+ *
  * @template T The type of the data returned from the storage operation.
  * @param response The response from a Supabase storage operation, which can be
  * either a success with data or an error with a StorageError.
@@ -562,6 +567,7 @@ export const handleSupabaseStorageResponse = <T>({
 /**
  * Executes a Supabase storage query and returns a ResultAsync containing either the
  * data or a SupabaseStorageError.
+ *
  * @template T The type of the data returned from the storage operation.
  * @param query A Promise-like object representing the Supabase storage query.
  * @returns A ResultAsync that resolves to the query data on success or
