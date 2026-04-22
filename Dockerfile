@@ -40,7 +40,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # Create non-root user for running the app
 RUN groupadd -r -g 1001 nodejs \
-	&& useradd -r -u 1001 -g nodejs nextjs
+  && useradd -r -u 1001 -g nodejs nextjs
 
 # Copy environment files for runtime
 COPY --chown=nextjs:nodejs .env* ./
