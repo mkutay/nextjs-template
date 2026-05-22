@@ -24,11 +24,25 @@ bun install
 
 ### 2. Configure environment variables
 
-Copy the example file and fill in your values:
+Copy the following file and fill in your values:
 
 ```bash
-cp .env.example .env.development
+# Database
+DATABASE_URL=postgres://postgres:password@localhost:5432/mydb
+
+# Better Auth
+BETTER_AUTH_SECRET=your-secret-here
+BETTER_AUTH_URL=http://localhost:3000
+
+# GitHub OAuth (https://github.com/settings/developers)
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+# Public (available in browser)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+You should create different environment files: `.env.test`, `.env.production`, and `.env.development`.
 
 | Variable               | Description                                           |
 | ---------------------- | ----------------------------------------------------- |
